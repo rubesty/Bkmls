@@ -17,7 +17,7 @@ function nhdl_sel(){
     e=document.getElementById("srchbox");
     var tits=nhdl_getTitle().split(/[\[\]\(\)]+/).forEach(str => {
         if(!str)return;
-        e.innerHTML+='　<a href='+argurl+'"?dec=on&mode=srch&word='
+        e.innerHTML+='　<a href="'+argurl+'?dec=on&mode=srch&word='
                    +encodeURIComponent(str)+'" target="_blank">'
                    +str+'</a>';
     });
