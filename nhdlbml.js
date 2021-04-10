@@ -1,5 +1,5 @@
 function Test(){
-    alert(111);
+    alert(argurl);
 }
 
 Test();
