@@ -1,3 +1,7 @@
+var nhdl_param={
+    title: ''
+};
+
 function nhdl_sel(){
     var d=document.createElement("div");
     d.style="height:100px;width:100%;";
@@ -14,13 +18,21 @@ function nhdl_sel(){
             + "<div id='subbox'></div>";
     document.body.insertBefore(e,d);
 
-    e=document.getElementById("srchbox");
-    var tits=nhdl_getTitle().split(/[\[\]\(\)]+/).forEach(str => {
-        if(!str)return;
-        e.innerHTML+='　<a href="'+argurl+'?dec=on&mode=srch&word='
-                   +encodeURIComponent(str)+'" target="_blank">'
-                   +str+'</a>';
-    });
+    const then_nhdl_getTitle=(title)=>{
+        let e=document.getElementById("srchbox");
+        title.split(/[\[\]\(\)]+/).forEach(str => {
+            if(!str)return;
+            e.innerHTML+='　<a href="'+argurl+'?dec=on&mode=srch&word='
+                       +encodeURIComponent(str)+'" target="_blank">'
+                       +str+'</a>';
+        });
+        nhdl_param.title = title;
+    }
+    if(/g\/\d+\/\d+/.test(location.pathname)){
+        nhdl_getTitleByUrl('../').then(then_nhdl_getTitle);
+    }else{
+        then_nhdl_getTitle(nhdl_getTitleByDom())
+    }
 }
 
 function nhdl_open(){
@@ -31,7 +43,7 @@ function nhdl_open(){
     if(rs || re){
         s+="&rs="+rs+"&re="+re;
     }
-    s+="&tit="+encodeURIComponent(nhdl_getTitle());
+    s+="&tit="+encodeURIComponent(nhdl_param.title);
     var a;
     if(!(a=document.getElementById("sub_anc"))){
         a = document.createElement("a");
@@ -46,13 +58,32 @@ function nhdl_open(){
     }
 }
 
-function nhdl_getTitle(){
-    var ts = document.getElementsByTagName('h2');
-    if(ts.length>0){
-        return ts[0].innerText;
+const nhdl_getTitleByDom = (doc=null)=>{
+    let t;
+    if(doc){
+        t = doc.getElementsByClassName('title');
     }else{
-        return "notitle";
+        t = document.getElementsByClassName('title');
+    }
+    if(t.length==0){
+        return "notitle"
+    }else if(t.length==1){
+        return t[0].innerText;
+    }else{
+        if(t[0].tagName=='H2'){
+            return t[0].innerText;
+        }else{
+            return t[1].innerText;
+        }
     }
 }
 
-nhdl_sel();
+const nhdl_getTitleByUrl = async(url)=>{
+    const res = await fetch(url);
+    const data = await res.text();
+    const doc = new DOMParser().parseFromString(data,'text/html');
+    return nhdl_getTitleByDom(doc);
+}
+
+//nhdl_sel();
+argurl = 'http://hogehoge/'
