@@ -85,5 +85,4 @@ const nhdl_getTitleByUrl = async(url)=>{
     return nhdl_getTitleByDom(doc);
 }
 
-//nhdl_sel();
-argurl = 'http://hogehoge/'
+nhdl_sel();
