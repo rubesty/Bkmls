@@ -1,3 +1,7 @@
+//----------------------
+//nhdl_support_functions
+//argf --> nhdl_sel
+//----------------------
 var nhdl_param={
     title: ''
 };
@@ -83,6 +87,38 @@ const nhdl_getTitleByUrl = async(url)=>{
     const data = await res.text();
     const doc = new DOMParser().parseFromString(data,'text/html');
     return nhdl_getTitleByDom(doc);
+}
+
+//-----------------------------------
+//nhdl cookie and ua sender
+//argf --> nhdl_cookie_send
+//-----------------------------------
+const nhdl_cookie_send = ()=>{
+    //let cookie = "cf_clearance=iSqL8UWtudjgLiD1bH1edC00B0qt0RTgk8MUk0FLTkg-1657290468-0-150; csrftoken=rIMOiKF6VYN5eepGSQlqsk3grGJAA5KO1BwkqOybA3dso8QrNIQPaalP2StsBehL;";
+    let cookie = document.cookie;
+    let c1 = /cf_clearance\=(.+?);/.test(cookie) ? RegExp.$1 : 0;
+    let c2 = /csrftoken\=(.+?);/.test(cookie) ? RegExp.$1 : 0;
+    let ua = navigator.userAgent;
+
+    let requesturi = argurl
+        +'?cf_clearance='+encodeURIComponent(c1)
+        +'&csrftoken='+encodeURIComponent(c2)
+        +'&ua='+encodeURIComponent(ua);
+
+    let d=document.createElement("div");
+    d.style="height:100px;width:100%;";
+    document.body.insertBefore(d, document.body.firstChild);
+    
+    let e=document.createElement("div");
+    e.style="height:100px;width:100%;position:fixed;left:0;top:0;background-color:black;opacity:0.8;z-index:100";
+    e.innerHTML= "<div>"
+            + '<div>c1[cf_clearance]='+c1+'</div>'
+            + '<div>c2[csrftoken]='+c2+'</div>'
+            + '<div>ua='+ua+'</div>'
+            + '<div><a style="margin: 20px 0px 20px 0px" target="_blank" href="'+requesturi+'">Cookie Send!!</a></div>'
+            + '</div>';
+
+    document.body.insertBefore(e,d);
 }
 
 argf();
